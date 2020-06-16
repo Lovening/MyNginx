@@ -50,5 +50,4 @@ void ngx_setproctitle(const char *title)
 
     //清空之后的内存
     memset(ptmp, 0, argvslen + g_ienvironlen - titlesize);
-    printf("ssssss");
 }

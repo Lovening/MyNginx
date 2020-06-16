@@ -85,11 +85,7 @@ bool CConfig::Load(const char *pConfName)
             //Rtrim(pCConfItem->ItemContent);
 
             m_ConfigItemList.push_back(pCConfItem);
-
         }
-
-
-
     }
 
 
