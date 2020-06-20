@@ -67,6 +67,11 @@ void ngx_log_stderr(int err, const char *fmt, ...)
     //写标准错误信息
     write(STDERR_FILENO, errstr, p - errstr);
 
+    //防止往标准错误未显示，写入日志文件
+    if (g_ngx_log.fd > STDERR_FILENO)
+    {
+        ngx_log_error_core(NGX_LOG_ERR, err, (const char*)errstr);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------------------------

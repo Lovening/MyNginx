@@ -8,11 +8,6 @@
 
 void ngx_init_setproctitle()
 {    
-    for (int i = 0; environ[i]; ++i)
-    {
-        g_ienvironlen += strlen(environ[i]) + 1;
-    }
-
     //初始化环境变量
     g_penvironmem = new char[g_ienvironlen];
     memset(g_penvironmem, 0, g_ienvironlen);
@@ -33,14 +28,8 @@ void ngx_setproctitle(const char *title)
     size_t titlesize = strlen(title);
 
     size_t argvslen = 0;
-    for (int i; g_ppargv[i]; ++i)
-    {
-        argvslen += strlen(g_ppargv[i]) + 1;
-    }
-
-    if (titlesize >= argvslen + g_ienvironlen)
+    if (titlesize >= g_iargvmemlen + g_ienvironlen)
         return;
-
     
     g_ppargv[1] = NULL;
 

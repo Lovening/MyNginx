@@ -7,7 +7,9 @@ export BUILD_ROOT = $(shell pwd)
 export INCLUDE_PATH = $(BUILD_ROOT)/_include/
 
 #我们要编译的目录
-BUILD_DIR = $(BUILD_ROOT)/app/ 
+BUILD_DIR = $(BUILD_ROOT)/signal/ \
+			$(BUILD_ROOT)/proc/ \
+			$(BUILD_ROOT)/app/ 
 
 #编译时是否生成调试信息
 export DEBUG = true

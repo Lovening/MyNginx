@@ -3,7 +3,7 @@
 #define __NGX_GBLDEF_H__
 
 //一些比较通用的定义放在这里
-
+#include <signal.h>
 
 //结构定义
 typedef struct
@@ -22,11 +22,19 @@ typedef struct
 
 
 //外部全局量声明
+extern int   g_iargc; //参数个数
 extern char  **g_ppargv;
 extern char  *g_penvironmem; 
 extern int   g_ienvironlen; 
+extern int   g_iargvmemlen;
 
-extern pid_t       g_ngx_pid;
-extern ngx_log_t   g_ngx_log;
+extern ngx_log_t  g_ngx_log;
+
+extern pid_t	g_ngx_ppid; 			
+extern pid_t    g_ngx_pid;
+extern int		g_isdaemon;
+extern int		g_iprocesstype;
+
+extern sig_atomic_t  g_ngx_reap;
 
 #endif
