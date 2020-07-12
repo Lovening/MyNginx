@@ -15,7 +15,8 @@ https://blog.csdn.net/Zhang_0507/article/details/86608031?utm_medium=distribute.
 2.undefined reference to 连接错误
 1）全局变量， extern int g_xxxx 只是声明，必须定义： int g_xxxx
 https://blog.csdn.net/qq_38880380/article/details/81474580
-2）makefil未添加编译文件
+2）makefile未添加编译文件
+3)class CSocket g_socekt;  缺少class类型定义
 
 3.Clock skew detected.  Your build may be incomplete
 修改系统时间
