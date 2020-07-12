@@ -34,5 +34,9 @@ sudo cp /usr/share/zoneinfo/Asia/Shanghai /etc/loacltime 复制文件，持久�
 4.执行make，未生成.d目录
 定位到对应代码行，查看是否是变量名写错，
 
+5.linux系统忘记root密码
+https://www.cnblogs.com/leonchan/p/10979735.html
+CENTOS,Linux处理方式不同
+
 
 
