@@ -26,4 +26,6 @@ void ngx_master_process_cycle();
 //守护进程
 int ngx_daemon();
 
+
+
 #endif  

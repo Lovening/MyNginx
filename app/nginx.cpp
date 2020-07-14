@@ -3,9 +3,11 @@
 #include <string.h>
 #include <unistd.h>
 
+
 #include "ngx_func.h"
 #include "ngx_c_conf.h"
 #include "ngx_macro.h"
+#include "ngx_c_socket.h" 
 
 char    **g_ppargv = NULL;
 char    *g_penvironmem = NULL; 
@@ -18,9 +20,10 @@ pid_t	g_ngx_ppid;
 int 	g_isdaemon;		    //是否是守护进程
 int     g_iprocesstype;
 
+class CSocket g_socekt; 
+
 sig_atomic_t  g_ngx_reap;         //标记子进程状态变化[一般是子进程发来SIGCHLD信号表示退出],
                                 //sig_atomic_t:系统定义的类型：访问或改变这些变量需要在计算机的一条指令内完成
-
 
 static void freeresource();
 
@@ -61,6 +64,13 @@ int main(int argc, char* const argv[])
 
     //信号初始化
     if(ngx_init_signals() == -1)
+    {
+        iexitcode = 1;
+        goto lblexit;
+    }
+
+    //初始化socket
+    if(!g_socekt.Initialize())
     {
         iexitcode = 1;
         goto lblexit;

@@ -37,4 +37,6 @@ extern int		g_iprocesstype;
 
 extern sig_atomic_t  g_ngx_reap;
 
+//extern CSocket g_socekt;
+
 #endif

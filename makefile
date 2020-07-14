@@ -16,5 +16,5 @@ all:
 
 clean:
 	rm -rf app/link_obj app/dep nginx
-	rm -rf signal/*.gch app/*.gch
+	rm -rf signal/*.gch proc/*.gch net/*.gch app/*.gch
 
