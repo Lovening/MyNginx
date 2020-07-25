@@ -20,7 +20,7 @@ pid_t	g_ngx_ppid;
 int 	g_isdaemon;		    //是否是守护进程
 int     g_iprocesstype;
 
-class CSocket g_socekt; 
+CSocket g_socket; 
 
 sig_atomic_t  g_ngx_reap;         //标记子进程状态变化[一般是子进程发来SIGCHLD信号表示退出],
                                 //sig_atomic_t:系统定义的类型：访问或改变这些变量需要在计算机的一条指令内完成
@@ -70,7 +70,7 @@ int main(int argc, char* const argv[])
     }
 
     //初始化socket
-    if(!g_socekt.Initialize())
+    if(!g_socket.Initialize())
     {
         iexitcode = 1;
         goto lblexit;

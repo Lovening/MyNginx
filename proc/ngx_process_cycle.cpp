@@ -126,7 +126,9 @@ static void ngx_worker_process_cycle(int inum,const char *pprocname)
         //ngx_log_error_core(0,0,"good--这是子进程，编号为%d,pid为%P！",inum, g_ngx_pid);
         //printf("good--这是子进程，编号为%d",inum);
         //fflush(stdout);
-        sleep(1);
+        //sleep(1);
+
+        ngx_process_events_and_timers();
     }
 }
 
@@ -139,4 +141,7 @@ static void ngx_worker_process_init(int inum)
     {
         ngx_log_error_core(NGX_LOG_ALERT,errno,"worker子进程编号为%d的ngx_worker_process_init()中sigprocmask()失败!", inum);
     }
+
+    g_socket.ngx_epoll_init();
+ 
 }

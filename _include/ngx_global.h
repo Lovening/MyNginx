@@ -4,6 +4,7 @@
 
 //一些比较通用的定义放在这里
 #include <signal.h>
+#include "ngx_c_socket.h"
 
 //结构定义
 typedef struct
@@ -37,6 +38,6 @@ extern int		g_iprocesstype;
 
 extern sig_atomic_t  g_ngx_reap;
 
-//extern CSocket g_socekt;
+extern  class CSocket g_socket; 
 
 #endif
