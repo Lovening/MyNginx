@@ -1,0 +1,42 @@
+main()
+{
+g_socket.Initialize()
+	ngx_open_listening_sockets()
+		for(m_ListenSocketList)
+			socket()
+			setsockopt()
+			setnonblocking()
+			bind()
+			listen()
+			
+	
+ngx_worker_process_cycle
+	ngx_worker_process_init() 子进程初始化
+		g_socket.ngx_epoll_init()
+			1)epoll_create()
+			2)创建连接池
+			3)for(m_ListenSocketList)
+				监听一个socket
+					c=ngx_get_connection()
+					c->rhandler = &CSocekt::ngx_event_accept;
+									accept()
+									ngx_get_connection()
+									newc->rhandler = &CSocekt::ngx_wait_request_handler
+										当连接上有数据来的时候,处理
+					ngx_epoll_add_event()
+						1)填充epoll_event
+						2)epoll_ctl(epoll_event)
+	for(;;)
+		ngx_process_events_and_timers()处理网络事件和定时器事件
+			ngx_epoll_process_events(-1)
+				epoll_wait(m_events)
+				for(m_events)
+					(this->*(c->rhandler))(c)
+
+
+	
+}
+	
+
+
+
