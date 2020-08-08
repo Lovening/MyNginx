@@ -39,6 +39,11 @@ lpngx_connection_t CSocket::ngx_get_connection(int isock)
 
     memset(pfront, 0, sizeof(ngx_connection_t));
     pfront->fd = isock;
+    pfront->icurstat = _PKG_HD_INIT;
+    pfront->precvbuf = pfront->headinfo_arr;
+    pfront->irest_recvlen = sizeof(COMM_PKG_HEADER);
+    pfront->bnew_recvmem = false;
+    pfront->pnewmem = NULL;
 
     pfront->instance = !instance;   //防止close()后，被复用
     pfront->icur_sequence = icursequence;

@@ -23,6 +23,17 @@ CSocket::CSocket()
 {
     m_ilisten_port_count = 1;
     m_iworker_connections = 1;
+
+    m_iepoll_handle = -1;
+    m_pconnections = NULL;
+    m_pfree_connections = NULL;
+
+    m_iconnection = 0;
+    m_ifree_connection = 0;
+
+    m_ipkgheader_len = sizeof(COMM_PKG_HEADER);
+    m_imsghead_len = sizeof(STUCT_MSG_HEADER);
+
 }
 
 CSocket::~CSocket()
