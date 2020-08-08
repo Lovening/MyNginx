@@ -44,3 +44,6 @@ CENTOS,Linux处理方式不同
 A:https://blog.csdn.net/dumgeewang/article/details/7709412?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param
 命令行前缺少tab， 一定是makefile格式出问题了
 
+
+7.new’未声明(在此函数内第一次使用),对‘operator new[](unsigned long)’未定义的引用,对‘operator delete[](void*)’未定义的引用,
+A:gcc编译导致，换成g++编译通过
