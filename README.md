@@ -55,3 +55,10 @@ A:添加-std=c++11选项
 A:1、没有加调用函数的头文件
 2、不存在xxx命名空间
 3、包含头文件，但是调用的时候，类名写错了
+
+10.链接错误：undefined reference to `pthread_create'
+            undefined reference to `pthread_join'
+A: 添加链接依赖      $(CC) -o $@ $^ -lpthread
+
+          
+
