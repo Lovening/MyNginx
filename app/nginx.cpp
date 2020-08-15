@@ -7,7 +7,10 @@
 #include "ngx_func.h"
 #include "ngx_c_conf.h"
 #include "ngx_macro.h"
-#include "ngx_c_socket.h" 
+#include "ngx_c_slogic.h" 
+#include "ngx_c_memory.h"
+#include "ngx_c_threadpool.h"
+#include "ngx_c_crc32.h"
 
 char    **g_ppargv = NULL;
 char    *g_penvironmem = NULL; 
@@ -20,7 +23,9 @@ pid_t	g_ngx_ppid;
 int 	g_isdaemon;		    //是否是守护进程
 int     g_iprocesstype;
 
-CSocket g_socket; 
+CLogicSocket g_socket; 
+
+CThreadPool g_threadpool; 
 
 sig_atomic_t  g_ngx_reap;         //标记子进程状态变化[一般是子进程发来SIGCHLD信号表示退出],
                                 //sig_atomic_t:系统定义的类型：访问或改变这些变量需要在计算机的一条指令内完成
@@ -58,6 +63,10 @@ int main(int argc, char* const argv[])
         goto lblexit;
         //exit(1);
     }
+    
+    //初始化单例类
+    CMemory::GetInstance();	
+    CCRC32::GetInstance();
 
     //日志初始化
     ngx_log_init();

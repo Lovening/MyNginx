@@ -60,7 +60,7 @@ typedef struct _STRUCT_MGS_HEADER
 {
 	lpngx_connection_t 				pconn;
 	uint64_t                  		icur_sequence; 
-}STUCT_MSG_HEADER,*LPSTUCT_MSG_HEADER;
+}STRUCT_MSG_HEADER,*LPSTRUCT_MSG_HEADER;
 
 //socket相关类
 class CSocket
@@ -95,8 +95,7 @@ private:
 	ssize_t RecvProc(lpngx_connection_t pconn, char *buff, ssize_t buflen);
 	void ngx_wait_request_hander_proc_p1(lpngx_connection_t c);
 	void ngx_wait_request_handler_proc_plast(lpngx_connection_t c);
-	void InMsgRecvQueue(char *buf);
-	void OutMsgRecvQueue();
+
 
 	//获取对端信息相关                                              
 	////根据参数1给定的信息，获取地址端口字符串，返回这个字符串的长度
@@ -108,6 +107,11 @@ private:
 	//归还参数c所代表的连接到到连接池中	
 	void ngx_free_connection(lpngx_connection_t c);                    
 
+protected:
+	//收包
+	size_t						   m_ipkghead_len;
+	size_t						   m_imsghead_len;
+
 private:
 	int                            m_ilisten_port_count;    			 //所监听的端口数量
 	int 						   m_iworker_connections;
@@ -115,7 +119,6 @@ private:
 
 	std::vector<lpngx_listening_t> m_listen_socket_list;                
 
-	//和连接池有关的
 	lpngx_connection_t             m_pconnections;                     //连接池的首地址
 	lpngx_connection_t             m_pfree_connections;                //空闲连接链表头
 	                                                                	
@@ -124,11 +127,6 @@ private:
 
 	struct epoll_event             m_event_arr[NGX_MAX_EVENTS];           //用于在epoll_wait()中承载返回的所发生的事件
 
-	//收包
-	size_t						   m_ipkgheader_len;
-	size_t						   m_imsghead_len;
-
-	std::list<char*>			   m_msgrecv_queue;
 };
 
 

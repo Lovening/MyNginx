@@ -31,8 +31,8 @@ CSocket::CSocket()
     m_iconnection = 0;
     m_ifree_connection = 0;
 
-    m_ipkgheader_len = sizeof(COMM_PKG_HEADER);
-    m_imsghead_len = sizeof(STUCT_MSG_HEADER);
+    m_ipkghead_len = sizeof(COMM_PKG_HEADER);
+    m_imsghead_len = sizeof(STRUCT_MSG_HEADER);
 
 }
 

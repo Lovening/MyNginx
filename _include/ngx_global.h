@@ -4,7 +4,8 @@
 
 //一些比较通用的定义放在这里
 #include <signal.h>
-#include "ngx_c_socket.h"
+#include "ngx_c_slogic.h"
+#include "ngx_c_threadpool.h"
 
 //结构定义
 typedef struct
@@ -38,6 +39,8 @@ extern int		g_iprocesstype;
 
 extern sig_atomic_t  g_ngx_reap;
 
-extern  class CSocket g_socket; 
+extern  CLogicSocket g_socket; 
+
+extern CThreadPool g_threadpool; 
 
 #endif

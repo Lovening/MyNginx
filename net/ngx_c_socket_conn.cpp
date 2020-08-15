@@ -18,6 +18,7 @@
 #include "ngx_global.h"
 #include "ngx_func.h"
 #include "ngx_c_socket.h"
+#include "ngx_c_memory.h"
 
 //从连接池中获取一个空闲连接
 lpngx_connection_t CSocket::ngx_get_connection(int isock)
@@ -55,6 +56,14 @@ lpngx_connection_t CSocket::ngx_get_connection(int isock)
 //归还参数c所代表的连接到到连接池中
 void CSocket::ngx_free_connection(lpngx_connection_t c) 
 {
+     if(c->bnew_recvmem)
+    {
+        //我们曾经给这个连接分配过内存，则要释放内存        
+        CMemory::GetInstance()->FreeMemory(c->pnewmem);
+        c->pnewmem = NULL;
+        c->bnew_recvmem = false;  //这行有用？
+    }
+
     c->pnext = m_pfree_connections;                      
 
    //回收后，该值就增加1,以用于判断某些网络事件是否过期【一被释放就立即+1也是有必要的】
@@ -63,5 +72,17 @@ void CSocket::ngx_free_connection(lpngx_connection_t c)
     m_pfree_connections = c;                           
     ++m_ifree_connection;        
 
+}
+
+void CSocket::ngx_close_connection(lpngx_connection_t c)
+{
+  
+   if (close(c->fd) == -1)
+   {
+        ngx_log_error_core(NGX_LOG_ALERT,errno,"CSocekt::ngx_close_connection()中close(%d)失败!",c->fd);  
+   }
+   c->fd = -1;
+   ngx_free_connection(c);
+   
 }
 

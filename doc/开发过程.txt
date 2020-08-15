@@ -1,0 +1,3 @@
+
+//唤醒丢失问题，sem_t sem_write;
+//参考信号量解决方案：https://blog.csdn.net/yusiguyuan/article/details/20215591  linux多线程编程--信号量和条件变量 唤醒丢失事件

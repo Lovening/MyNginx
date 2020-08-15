@@ -113,14 +113,3 @@ void CSocket::ngx_event_accept(lpngx_connection_t pold_conn)
     } while (false);
 }
 
-void CSocket::ngx_close_connection(lpngx_connection_t c)
-{
-  
-   if (close(c->fd) == -1)
-   {
-        ngx_log_error_core(NGX_LOG_ALERT,errno,"CSocekt::ngx_close_accepted_connection()中close(%d)失败!",c->fd);  
-   }
-   ngx_free_connection(c);
-   c->fd = -1;
-   
-}

@@ -130,6 +130,8 @@ static void ngx_worker_process_cycle(int inum,const char *pprocname)
 
         ngx_process_events_and_timers();
     }
+
+    g_threadpool.StopAll();
 }
 
 //描述：子进程创建时调用本函数进行一些初始化工作
@@ -141,6 +143,10 @@ static void ngx_worker_process_init(int inum)
     {
         ngx_log_error_core(NGX_LOG_ALERT,errno,"worker子进程编号为%d的ngx_worker_process_init()中sigprocmask()失败!", inum);
     }
+
+    //创建线程池
+    int ithreadnums = CConfig::GetInstance()->GetIntDefault("ProcMsgRecvWorkThreadCount", 1);
+    g_threadpool.Create(ithreadnums);
 
     g_socket.ngx_epoll_init();
  

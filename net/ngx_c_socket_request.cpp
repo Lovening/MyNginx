@@ -22,14 +22,14 @@
 
 //来数据时候的处理，当连接上有数据来的时候，本函数会被ngx_epoll_process_events()所调用  ,官方的类似函数为ngx_http_wait_request_handler();
 void CSocket::ngx_wait_request_handler(lpngx_connection_t c)
-{  
-   ssize_t irecv = RecvProc(c, c->precvbuf, c->irest_recvlen);
-   if (irecv <= 0)
+{    
+    ssize_t irecv = RecvProc(c, c->precvbuf, c->irest_recvlen);
+    if (irecv <= 0)
     return;
 
     if (c->icurstat == _PKG_HD_INIT)
     {
-        if (irecv == m_ipkgheader_len)
+        if (irecv == m_ipkghead_len)
         {
             //收包头
             ngx_wait_request_hander_proc_p1(c);
@@ -86,40 +86,16 @@ void CSocket::ngx_wait_request_handler(lpngx_connection_t c)
 
 void CSocket::ngx_wait_request_handler_proc_plast(lpngx_connection_t c)
 {
+
     //保存至消息队列
-    InMsgRecvQueue(c->pnewmem);
-}
+    g_threadpool.InMsgRecvQueueAndSignal(c->pnewmem);
 
-void CSocket::InMsgRecvQueue(char *buf)
-{
-    m_msgrecv_queue.push_back(buf);
+    c->bnew_recvmem = false;
+    c->pnewmem = NULL;
+    c->icurstat = _PKG_HD_INIT;
+    c->precvbuf = c->headinfo_arr;
+    c->irest_recvlen = m_ipkghead_len;      //重置接收长度
 
-    OutMsgRecvQueue();
-    ngx_log_stderr(0,"非常好，收到了一个完整的数据包【包头+包体】！");  
-
-    //ngx_log_stderr(0, "%s", buf);    
-}
-
-void CSocket::OutMsgRecvQueue()
-{
- if(m_msgrecv_queue.empty())  
-    {
-        return;
-    }
-    int size = m_msgrecv_queue.size();
-    if(size < 1000) //消息不超过1000条就不处理先
-    {
-        return; 
-    }
-    //消息达到1000条
-    CMemory *pmemory = CMemory::GetInstance();		
-    int cha = size - 500;
-    for(int i = 0; i < cha; ++i)
-    {
-        char *sTmpMsgBuf = m_msgrecv_queue.front();
-        m_msgrecv_queue.pop_front();              
-        pmemory->FreeMemory(sTmpMsgBuf);       
-    }      
 }
 
 void CSocket::ngx_wait_request_hander_proc_p1(lpngx_connection_t c)
@@ -128,13 +104,13 @@ void CSocket::ngx_wait_request_hander_proc_p1(lpngx_connection_t c)
     unsigned short sPackageLen = ntohs(pPkgHeader->sPckLen);
 
     //校验
-    if (sPackageLen < m_ipkgheader_len
+    if (sPackageLen < m_ipkghead_len
         || sPackageLen > _PKG_MAX_LENGTH - 1000)
     {
         //包错误
         c->icurstat = _PKG_HD_INIT;
         c->precvbuf = c->headinfo_arr;
-        c->irest_recvlen = m_ipkgheader_len;
+        c->irest_recvlen = m_ipkghead_len;
     }
     else
     {
@@ -146,15 +122,15 @@ void CSocket::ngx_wait_request_hander_proc_p1(lpngx_connection_t c)
         c->pnewmem = pTmpBuffer;
 
         //填充
-        LPSTUCT_MSG_HEADER pTempMsgHeader = LPSTUCT_MSG_HEADER(pTmpBuffer);
+        LPSTRUCT_MSG_HEADER pTempMsgHeader = LPSTRUCT_MSG_HEADER(pTmpBuffer);
         pTempMsgHeader->pconn = c;
         pTempMsgHeader->icur_sequence = c->icur_sequence;
 
         //包头
         pTmpBuffer += m_imsghead_len;
-        memcpy(pTmpBuffer, pPkgHeader, m_ipkgheader_len);
+        memcpy(pTmpBuffer, pPkgHeader, m_ipkghead_len);
 
-        if (sPackageLen == m_ipkgheader_len)
+        if (sPackageLen == m_ipkghead_len)
         {
             //无包体
             //插入消息队列
@@ -163,8 +139,8 @@ void CSocket::ngx_wait_request_hander_proc_p1(lpngx_connection_t c)
         else
         {
             c->icurstat = _PKG_BD_INIT;
-            c->precvbuf = pTmpBuffer + m_ipkgheader_len;
-            c->irest_recvlen = sPackageLen - m_ipkgheader_len;
+            c->precvbuf = pTmpBuffer + m_ipkghead_len;
+            c->irest_recvlen = sPackageLen - m_ipkghead_len;
         }
     }
 }
@@ -201,7 +177,8 @@ ssize_t CSocket::RecvProc(lpngx_connection_t c, char *buff, ssize_t buflen)
         {
             ngx_log_stderr(errno,"CSocekt::recvproc()中发生错误，我打印出来看看是啥错误！");
         }
-
+        
+        ngx_log_stderr(0,"连接被客户端 非 正常关闭！");
         ngx_close_connection(c);
         return -1;
     }

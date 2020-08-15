@@ -2,11 +2,11 @@
 
 ifeq ($(DEBUG), true)
 #CC = gcc -g
-CC = g++ -g
+CC = g++ -std=c++11 -g
 VERSION = debug
 else
 #CC = gcc
-CC = g++ 
+CC = g++ -std=c++11
 VERSION = release
 endif
 
@@ -43,7 +43,7 @@ endif
 #一些变量：$@：目标，     $^：所有目标依赖
 $(BIN):$(LINK_OBJ)
 	@echo "-----------------------build $(VERSION) mode------------------"
-	$(CC) -o $@ $^
+	$(CC) -o $@ $^ -lpthread
 
 $(LINK_OBJ_DIR)/%.o:%.cpp
 	$(CC) -I$(INCLUDE_PATH) -o $@ -c $(filter %.cpp,$^)
@@ -52,4 +52,4 @@ $(LINK_OBJ_DIR)/%.o:%.cpp
 #修改.h重新编译
 $(DEP_DIR)/%.d:%.cpp
 	echo -n $(LINK_OBJ_DIR)/ > $@
-	gcc -I$(INCLUDE_PATH) -MM $^ >> $@
+	$(CC) -I$(INCLUDE_PATH) -MM $^ >> $@
