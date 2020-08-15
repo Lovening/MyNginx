@@ -47,3 +47,6 @@ A:https://blog.csdn.net/dumgeewang/article/details/7709412?utm_medium=distribute
 
 7.new’未声明(在此函数内第一次使用),对‘operator new[](unsigned long)’未定义的引用,对‘operator delete[](void*)’未定义的引用,
 A:gcc编译导致，换成g++编译通过
+
+8.note: C++11 ‘constexpr’ only available with -std=c++11 or -std=gnu++11
+A:添加-std=c++11选项
