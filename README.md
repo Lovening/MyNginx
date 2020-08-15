@@ -50,3 +50,8 @@ A:gcc编译导致，换成g++编译通过
 
 8.note: C++11 ‘constexpr’ only available with -std=c++11 or -std=gnu++11
 A:添加-std=c++11选项
+
+9.does not name a type
+A:1、没有加调用函数的头文件
+2、不存在xxx命名空间
+3、包含头文件，但是调用的时候，类名写错了
