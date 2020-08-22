@@ -2,6 +2,7 @@
 Nginx实战
 
 参考TortoiseGit:   https://blog.csdn.net/h0422856/article/details/51276093
+本地创建分支，删除，合并 https://www.cnblogs.com/hbujt/p/5554038.html
 
 //遇到的问题及解决方法：
 
