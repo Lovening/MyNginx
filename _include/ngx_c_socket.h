@@ -42,14 +42,14 @@ struct ngx_connection_s
 	ngx_event_handler_pt      		fp_whandler;      
 		
 
-		//收包
+	//收包
 	int						  		icurstat;
 	char 							headinfo_arr[_DATA_BUFSIZE];
 	char							*precvbuf;
 	unsigned int					irest_recvlen;
-
 	bool							bnew_recvmem;
 	char							*pnewmem;
+	pthread_mutex_t           		logicPorcMutex;                 //逻辑处理相关的互斥量      
 
 
 	lpngx_connection_t		  		pnext;          

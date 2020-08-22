@@ -2,6 +2,13 @@
 #ifndef __NGX_LOGICCOMM_H__
 #define __NGX_LOGICCOMM_H__
 
+
+//收发命令宏定义
+#define _CMD_START	                    0  
+#define _CMD_REGISTER 		            _CMD_START + 5   //注册
+#define _CMD_LOGIN 		                _CMD_START + 6   //登录
+
+
 //结构定义------------------------------------
 #pragma pack (1)
 

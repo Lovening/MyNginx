@@ -120,6 +120,44 @@ void CLogicSocket::threadRecvProcFunc(char *pMsgBuf)
 //处理各种业务逻辑
 bool CLogicSocket::HandleRegister(lpngx_connection_t pConn,LPSTRUCT_MSG_HEADER pMsgHeader,char *pPkgBody,unsigned short iBodyLength)
 {
+    if (pPkgBody == NULL)
+    {
+        return false;
+    }
+
+    int iRecvLen = sizeof(STRUCT_REGISTER);
+    if (iRecvLen != iBodyLength)
+    {
+        return false;
+    }
+
+    CLock lock(&pConn->logicPorcMutex);
+
+    LPSTRUCT_REGISTER pRecvInfo = (LPSTRUCT_REGISTER)pPkgBody;
+    //业务逻辑
+
+    //给客户端返回数据时，一般也是返回一个结构，这个结构内容具体由客户端/服务器协商，这里我们就以给客户端也返回同样的 STRUCT_REGISTER 结构来举例
+    CMemory  *pMemory = CMemory::GetInstance();
+	CCRC32   *pCrc32 = CCRC32::GetInstance();
+
+    int iSendLen = sizeof(STRUCT_REGISTER);
+    char *pSendBuf = pMemory->AllocMemory(m_imsghead_len + m_ipkghead_len + iSendLen);
+
+    //消息头
+    memcpy(pSendBuf, pMsgHeader, m_imsghead_len);
+    //包头
+    LPCOMM_PKG_HEADER pPkgHeader = pSendBuf + m_imsghead_len;
+    pPkgHeader->sPckLen = htons(m_ipkghead_len + iSendLen);
+    pPkgHeader->sMsgCode = htons(_CMD_REGISTER);
+    //包体
+    LPSTRUCT_REGISTER pSendInfo = (LPSTRUCT_REGISTER)(pSendBuf + m_imsghead_len + m_ipkghead_len);
+    pPkgHeader->iCrc32 = htonl(pCrc32->Get_CRC((unsigned char *)pSendInfo, iSendLen));
+
+    //发送数据包
+
+
+
+
     ngx_log_stderr(0,"执行了CLogicSocket::HandleRegister()!");
     return true;
 }

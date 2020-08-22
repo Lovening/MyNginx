@@ -1,6 +1,6 @@
 main()
 {
-g_socket.Initialize()
+g_socket.Initialize()	//初始化监听套接字
 	ngx_open_listening_sockets()
 		for(m_ListenSocketList)
 			socket()
@@ -12,29 +12,48 @@ g_socket.Initialize()
 	
 ngx_worker_process_cycle
 	ngx_worker_process_init() 子进程初始化
+		sigprocmask() 设置信号集
+		g_threadpool.Create() 创建线程池
+			pthread_create(ThreadFunc)
+				pthread_cond_wait()	
+				g_socket.threadRecvProcFunc()	处理消息队列中来的消息
+		g_socket.Initialize_subproc()
+			pthread_create() 延迟回收线程线程
 		g_socket.ngx_epoll_init()
 			1)epoll_create()
-			2)创建连接池
+			2)initconnection() 创建连接池
 			3)for(m_ListenSocketList)
 				监听一个socket
 					c=ngx_get_connection()
 					c->rhandler = &CSocekt::ngx_event_accept;
 									accept()
 									ngx_get_connection()
-									newc->rhandler = &CSocekt::ngx_wait_request_handler
-										当连接上有数据来的时候,处理
+									newc->rhandler = &CSocekt::ngx_wait_request_handler 当连接上有数据来的时候,处理
+															recvproc()	接收数据
+																recv()
+																inRecyConnectQueue()	延迟回收连接
+															ngx_wait_request_handler_proc_p1
+															ngx_wait_request_handler_proc_plast
+																g_threadpool.inMsgRecvQueueAndSignal（）入线程池
+																	Call()	激发
+																		pthread_cond_signal()
 					ngx_epoll_add_event()
 						1)填充epoll_event
 						2)epoll_ctl(epoll_event)
 	for(;;)
 		ngx_process_events_and_timers()处理网络事件和定时器事件
-			ngx_epoll_process_events(-1)
+			g_socket.ngx_epoll_process_events(-1)
 				epoll_wait(m_events)
 				for(m_events)
 					(this->*(c->rhandler))(c)
 
-
-	
+	g_threadpool.StopAll() //停止线程池
+		pthread_cond_broadcast()
+		pthread_join()
+	g_socket.Shutdown_subproc()//socket子进程结束
+		pthread_join() 等待延迟回收线程线程结束，子进程个数
+		clearMsgSendQueue()
+		clearconnection()
 }
 	
 
